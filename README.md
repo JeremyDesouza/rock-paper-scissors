@@ -1,1 +1,1 @@
-Odin Projec rock, paper, scissors 
+The Odin Project rock, paper, scissors game. Played in console. 
