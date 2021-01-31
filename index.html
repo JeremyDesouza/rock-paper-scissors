@@ -1,70 +1,156 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Page Title</title>
-  <meta charset="UTF-8"/>
-</head>
-<body>
+  <head>
+    <title>Rock, Paper, Scissors</title>
+    <meta charset="UTF-8"/>
+    <link rel='stylesheet' href='styles.css'>
+  </head>
+  <body>
+    <div class='container'>
+      <h1>Rock, Paper, Scissors</h1>
+      
+      <div class='scoreboard'>
+        <h3>Score</h3>
+        <div>
+          <div class='player-board'>
+            <p>Player</p>
+            <p id='player-score'>0</p>
+          </div>
+
+          <div class='comp-board'>
+
+            <p>Computer</p>
+            <p id='comp-score'>0</p>
+          </div>
+
+        </div>
+      </div>
+
+      <div class='options'>
+        <button type='button' class='options-button' id='rock'></button>
+        <button type='button' class='options-button' id='paper'></button>
+        <button type='button' class='options-button' id= 'scissors'></button>
+      </div>
+
+      <div class='results'></div>
+
+      <div class= 'restart-game'>
+        <button type='button' class='restart-btn'>Play again</button>
+      </div>
+    
+    </div>
+  
+  
   <script>
-    function computerPlay() {
+   
+   function computerPlay() {
       let rand_num = Math.floor(Math.random()*3);
-      switch (rand_num) {
-        case 0: 
-            return 'Rock';
-        case 1: 
-            return 'Paper';
-        case 2: 
-            return 'Scissors'
-        }
-      }
+      options = ['Rock', 'Paper', 'Scissors'];
+
+      return options[rand_num];
+    }
 
 
-    function playRound(playerSelection, computerSelection) {
-      let playerChoice = playerSelection[0].toUpperCase() + playerSelection.slice(1).toLowerCase();
-      let compChoice = computerSelection;
+    function playRound(choice) {
+      
+      let playerChoice = choice[0].toUpperCase() + choice.slice(1);
+      let compChoice = computerPlay();
       let result = '';
       
-      if (playerChoice == compChoice) {return 'It\s a Tie!'}
-
-      switch (playerChoice) {
-        case 'Rock': 
-          result = compChoice == 'Scissors' ? 'win' : 'lose';
-          break;
-        case 'Paper':
-          result = (compChoice == 'Rock') ? 'win' : 'lose';
-          break;
-        case 'Scissors':
-          result = (compChoice == 'Paper') ? 'win' : 'lose';
-          break;
+      if (playerChoice == compChoice) {
+        result = 'tie';
+      }
+      else {
+        switch (playerChoice) {
+          case 'Rock': 
+            result = (compChoice == 'Scissors') ? 'win' : 'lose';
+            break;
+          case 'Paper':
+            result = (compChoice == 'Rock') ? 'win' : 'lose';
+            break;
+          case 'Scissors':
+            result = (compChoice == 'Paper') ? 'win' : 'lose';
+            break;
+        }
+        
       }
       
-      if (result == 'win') {return `You Win! ${playerChoice} beats ${compChoice}`}
-      else {return `You Lose! ${compChoice} beats ${playerChoice}`}
+      printRoundResult(result, playerChoice, compChoice);
+      if (result != 'tie') {updateScores(result)}
     }
-
     
-    function game() {
-      for (round=1; round<=5; round++) {
-        let isValidChoice = false
-        let choice = '';
-        
-        while (!isValidChoice) {
-          choice = prompt('Enter your selection!').toLowerCase();
-          isValidChoice = isValidSelection(choice);
-        }
 
-        console.log(playRound(choice, computerPlay()));
+    function printRoundResult(result, playerChoice, compChoice) {
+
+      let outputString = '';
+      if (result == 'win') {
+        outputString = `You Win! ${playerChoice} beats ${compChoice}`;
+      }
+      else if (result == 'lose') {
+        outputString = `You Lose! ${compChoice} beats ${playerChoice}`;
+      }
+      else {
+        outputString = 'It\'s a tie!';
+      }
+
+      resultsDiv.textContent = outputString;
+      }
+
+
+    function updateScores(result) {
+      if (result == 'win') {
+        playerScore.textContent = parseInt(playerScore.textContent) + 1;
+      }
+      else if (result == 'lose') {
+        compScore.textContent = parseInt(compScore.textContent) + 1;
+      }
+      
+      checkGameOver();
+    }
+    
+
+    function checkGameOver() {
+      //check if one player has won 5 rounds
+      if (playerScore.textContent == '5' || compScore.textContent == '5'){
+        let gameResult = (playerScore.textContent =='5') ? 'WON' : 'LOST';
+        resultsDiv.textContent = `You ${gameResult} the game!`;
+        optionsButtons.forEach(button => {
+            button.removeEventListener('click', getplayerChoice)})
       }
     }
-
+      
     
-    function isValidSelection(choice) {
+    function restartGame() {
+      //clear the scores and results 
+      playerScore.textContent = 0;
+      compScore.textContent = 0;
+      resultsDiv.textContent = '';
+      optionsButtons.forEach(button => 
+          {button.addEventListener('click', getplayerChoice)});
+    }
+    
+    
+    const optionsButtons = document.querySelectorAll('.options > button');
+    optionsButtons.forEach(button => {
+      button.addEventListener('click', getplayerChoice)});
 
-      if (choice=='rock' || choice=='paper' || choice=='scissors') {
-        return true
-      } else {return false}
+    let playerScore = document.querySelector('#player-score');
+    let compScore = document.querySelector('#comp-score');
+
+    const resultsDiv = document.querySelector('.results');    
+
+    const restartButton = document.querySelector('.restart-btn');
+    restartButton.addEventListener('click', restartGame);
+    
+    
+    function getplayerChoice(e) {
+      let playerChoice = e.target.id;
+      playRound(playerChoice);
     }
 
+    function toggleOptionsBtnListener() {
+    }
+    
   </script>
-</body>
+  </body>
 </html>
