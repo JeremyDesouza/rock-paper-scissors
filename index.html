@@ -114,8 +114,10 @@
       if (playerScore.textContent == '5' || compScore.textContent == '5'){
         let gameResult = (playerScore.textContent =='5') ? 'WON' : 'LOST';
         resultsDiv.textContent = `You ${gameResult} the game!`;
-        optionsButtons.forEach(button => {
-            button.removeEventListener('click', getplayerChoice)})
+        toggleOptionsBtnListener('off');
+        
+        //optionsButtons.forEach(button => {
+        //    button.removeEventListener('click', getplayerChoice)})
       }
     }
       
@@ -125,14 +127,17 @@
       playerScore.textContent = 0;
       compScore.textContent = 0;
       resultsDiv.textContent = '';
-      optionsButtons.forEach(button => 
-          {button.addEventListener('click', getplayerChoice)});
+      toggleOptionsBtnListener('on');
+      
+      //optionsButtons.forEach(button => 
+      //    {button.addEventListener('click', getplayerChoice)});
     }
     
     
     const optionsButtons = document.querySelectorAll('.options > button');
-    optionsButtons.forEach(button => {
-      button.addEventListener('click', getplayerChoice)});
+    toggleOptionsBtnListener('on');
+    //optionsButtons.forEach(button => {
+    //  button.addEventListener('click', getplayerChoice)});
 
     let playerScore = document.querySelector('#player-score');
     let compScore = document.querySelector('#comp-score');
@@ -148,7 +153,16 @@
       playRound(playerChoice);
     }
 
-    function toggleOptionsBtnListener() {
+    
+    function toggleOptionsBtnListener(end_state) {
+      if (end_state == 'off') {
+        optionsButtons.forEach(button => 
+            button.removeEventListener('click', getPlayerChoice))
+      }
+      else if (end_state == 'on') {
+        optionsButtons.forEach(button =>
+            button.addEventListener('click', getPlayerChoice))
+      }
     }
     
   </script>
